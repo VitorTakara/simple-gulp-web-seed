@@ -3,7 +3,9 @@
 Gulp web seed
 Made with <3 by Vitor Takara
 
-1) gulp build - compila o projeto e serve pelo browserSync para o autoreload
+1) npm start - compila o projeto e serve pelo browserSync para o autoreload
+
+*Caso não funcione, instale o gulp globalmente: npm install gulp -g
 
 */
 
@@ -22,13 +24,25 @@ var gulp = require("gulp"),
   htmlmin = require('gulp-htmlmin'),
   rimraf = require("rimraf");
 
+// JS
+gulp.task("required-js", function() {
+  return gulp
+    .src(["app/js/index.js"])
+    //.pipe(sourcemaps.init()) //ATIVAR SE QUISER SOURCEMAP
+    .pipe(rigger())
+    .pipe(concat("main.js"))
+    .pipe(uglify(/* options */))
+    //.pipe(sourcemaps.write()) //ATIVAR SE QUISER SOURCEMAP
+    .pipe(gulp.dest("dist/js"));
+});
+
 // BROWSERSYNC
 gulp.task("browser-sync", function() {
   browserSync.init({server: {baseDir: "dist",index:"index.html"}});
   gulp.watch("app/**/*").on("change", browserSync.reload);
   gulp.watch("app/*.html", ["html"]);
   gulp.watch("app/scss/**/*.scss", ["sass"]);
-  gulp.watch("app/js/**/*.js", ["js"]);
+  gulp.watch("app/js/**/*.js", ["required-js"]);
   gulp.watch("app/img/**/*.*", ["img"]);
 });
 
@@ -54,19 +68,6 @@ gulp.task("sass", function() {
     .pipe(gulp.dest("dist/css"));
 });
 
-// JS
-
-gulp.task("js", function() {
-  return gulp
-    .src(["app/js/index.js"])
-    //.pipe(sourcemaps.init()) //ATIVAR SE QUISER SOURCEMAP
-    .pipe(rigger())
-    .pipe(concat("main.js"))
-    .pipe(uglify(/* options */))
-    //.pipe(sourcemaps.write()) //ATIVAR SE QUISER SOURCEMAP
-    .pipe(gulp.dest("dist/js"));
-});
-
 // IMAGES
 gulp.task("img", function() {
   return gulp
@@ -84,7 +85,7 @@ gulp.task("clear", function(cb) {
 gulp.task("watch", function() {
   gulp.watch("app/*.html", ["html"]);
   gulp.watch("app/scss/**/*.scss", ["sass"]);
-  gulp.watch("app/js/**/*.js", ["js"]);
+  gulp.watch("app/js/**/*.js", ["required-js"]);
   gulp.watch("app/img/**/*.*", ["img"]);
   console.log(
     "\n\n\nWatching Changes\n\n\n"
@@ -104,7 +105,7 @@ gulp.task("build", function() {
     "clear",
     "html",
     "sass",
-    "js",
+    "required-js",
     "img",
     "favicon",    
     "browser-sync",

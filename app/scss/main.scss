@@ -1,12 +1,15 @@
 // Variáveis
+// Contém as variáveis do sistema
 @import "variables/index";
 
 // Base
+// Arquivo base global que será usado em todas as telas
 @import "base/index";
-@import "base/mediaqueries";
 
 // Helper classes
+// Classes para ajudar na estilização
 @import "helper classes/index";
 
 // Animations
+// Animações em CSS
 @import "animations/index";
